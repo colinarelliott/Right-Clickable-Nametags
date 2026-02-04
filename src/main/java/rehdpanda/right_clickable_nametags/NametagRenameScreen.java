@@ -19,7 +19,7 @@ public class NametagRenameScreen extends Screen {
     private final int backgroundHeight = 90;
 
     protected NametagRenameScreen(ItemStack nametag) {
-        super(Text.literal("Rename Nametag"));
+        super(Text.literal("Rename Nametag:"));
         this.nametag = nametag;
     }
 
@@ -38,8 +38,12 @@ public class NametagRenameScreen extends Screen {
         
         String currentName = nametag.get(DataComponentTypes.CUSTOM_NAME) != null ? nametag.get(DataComponentTypes.CUSTOM_NAME).getString() : "";
         this.nameField.setText(currentName);
+        this.nameField.setSelectionStart(0);
+        this.nameField.setSelectionEnd(this.nameField.getText().length());
+        
         this.addSelectableChild(this.nameField);
         this.setInitialFocus(this.nameField);
+        this.setFocused(this.nameField);
 
         this.addDrawableChild(ButtonWidget.builder(Text.translatable("gui.done"), button -> {
             confirm();
