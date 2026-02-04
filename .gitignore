@@ -6,6 +6,7 @@ run/
 !**/src/main/**/build/
 !**/src/test/**/build/
 .kotlin
+.output.txt
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
