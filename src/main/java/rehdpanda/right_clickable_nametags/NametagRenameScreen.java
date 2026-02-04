@@ -1,18 +1,15 @@
 package rehdpanda.right_clickable_nametags;
 
-import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.client.input.KeyInput;
 
 public class NametagRenameScreen extends Screen {
-    private static final Identifier TEXTURE = Identifier.of("nametag-rename", "textures/nametag_prompt.png");
     private final ItemStack nametag;
     private TextFieldWidget nameField;
     private final int backgroundWidth = 176;
@@ -62,19 +59,17 @@ public class NametagRenameScreen extends Screen {
     @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
         super.renderBackground(context, mouseX, mouseY, delta);
-        int x = (this.width - this.backgroundWidth) / 2;
-        int y = (this.height - this.backgroundHeight) / 2;
-        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0f, 0f, this.backgroundWidth, this.backgroundHeight, 256, 256);
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
         int x = (this.width - this.backgroundWidth) / 2;
         int y = (this.height - this.backgroundHeight) / 2;
+        
+        super.render(context, mouseX, mouseY, delta);
 
+        context.drawText(this.textRenderer, this.title, x + 10, y + 10, 0xFFFFFFFF, false);
         this.nameField.render(context, mouseX, mouseY, delta);
-        context.drawText(this.textRenderer, this.title, x + 8, y + 8, 4210752, false);
     }
 
     @Override
