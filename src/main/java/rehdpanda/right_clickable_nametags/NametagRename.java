@@ -16,27 +16,31 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class NametagRename implements ModInitializer {
-    public static final Logger LOGGER = LoggerFactory.getLogger("nametag-rename");
     public static final Identifier RENAME_PACKET_ID = Identifier.of("nametag-rename", "rename");
 
+    /**
+     * Payload for renaming a nametag.
+     */
     public record RenamePayload(String name) implements CustomPayload {
         public static final Id<RenamePayload> ID = new Id<>(RENAME_PACKET_ID);
         public static final PacketCodec<RegistryByteBuf, RenamePayload> CODEC = PacketCodec.tuple(PacketCodecs.STRING, RenamePayload::name, RenamePayload::new);
 
+        /**
+         * Returns the ID of the payload.
+         */
         @Override
         public Id<? extends CustomPayload> getId() {
             return ID;
         }
     }
 
+    /**
+     * Initializes the mod, registers network packets and item use events.
+     */
     @Override
     public void onInitialize() {
-        LOGGER.info("Right-Clickable Nametags initialized!");
-
         PayloadTypeRegistry.playC2S().register(RenamePayload.ID, RenamePayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(RenamePayload.ID, (payload, context) -> {
@@ -62,7 +66,6 @@ public class NametagRename implements ModInitializer {
             ItemStack stack = player.getStackInHand(hand);
 
             if (stack.isOf(Items.NAME_TAG)) {
-                LOGGER.info("Nametag right-clicked! Client side: {}", world.isClient());
                 if (world.isClient()) {
                     NametagRenameClient.openRenameScreen(stack, hand);
                 }

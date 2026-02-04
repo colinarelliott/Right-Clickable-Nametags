@@ -7,31 +7,28 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 
 public class NametagRenameClient implements ClientModInitializer {
-    private static boolean isNametagRename = false;
 
+    /**
+     * Initializes the client side of the mod.
+     */
     @Override
     public void onInitializeClient() {
     }
 
+    /**
+     * Opens the nametag rename screen.
+     */
     public static void openRenameScreen(ItemStack stack, Hand hand) {
-        NametagRename.LOGGER.info("Opening rename screen for nametag");
         MinecraftClient client = MinecraftClient.getInstance();
         if (client != null && client.player != null) {
-            isNametagRename = true;
             client.setScreen(new NametagRenameScreen(stack.copy()));
         }
     }
 
-    public static boolean isNametagRename() {
-        return isNametagRename;
-    }
-
-    public static void setNametagRename(boolean value) {
-        isNametagRename = value;
-    }
-
+    /**
+     * Sends a rename packet to the server.
+     */
     public static void sendRenamePacket(String name) {
         ClientPlayNetworking.send(new NametagRename.RenamePayload(name));
-        isNametagRename = false;
     }
 }

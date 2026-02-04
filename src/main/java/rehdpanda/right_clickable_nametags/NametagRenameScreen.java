@@ -15,11 +15,17 @@ public class NametagRenameScreen extends Screen {
     private final int backgroundWidth = 176;
     private final int backgroundHeight = 90;
 
+    /**
+     * Constructs the rename screen.
+     */
     protected NametagRenameScreen(ItemStack nametag) {
         super(Text.literal("Rename Nametag:"));
         this.nametag = nametag;
     }
 
+    /**
+     * Initializes the screen widgets.
+     */
     @Override
     protected void init() {
         int x = (this.width - this.backgroundWidth) / 2;
@@ -27,8 +33,6 @@ public class NametagRenameScreen extends Screen {
 
         this.nameField = new TextFieldWidget(this.textRenderer, x + 10, y + 30, 156, 20, Text.literal("Name"));
         this.nameField.setMaxLength(50);
-        this.nameField.setEditableColor(-1);
-        this.nameField.setUneditableColor(-1);
         this.nameField.setDrawsBackground(true);
         this.nameField.setFocusUnlocked(false);
         this.nameField.setFocused(true);
@@ -39,28 +43,26 @@ public class NametagRenameScreen extends Screen {
         this.nameField.setSelectionEnd(this.nameField.getText().length());
         
         this.addSelectableChild(this.nameField);
-        this.setInitialFocus(this.nameField);
         this.setFocused(this.nameField);
 
-        this.addDrawableChild(ButtonWidget.builder(Text.translatable("gui.done"), button -> {
-            confirm();
-        }).dimensions(x + 10, y + 60, 75, 20).build());
+        this.addDrawableChild(ButtonWidget.builder(Text.translatable("gui.done"), button -> confirm())
+                .dimensions(x + 10, y + 60, 75, 20).build());
 
-        this.addDrawableChild(ButtonWidget.builder(Text.translatable("gui.cancel"), button -> {
-            this.close();
-        }).dimensions(x + 91, y + 60, 75, 20).build());
+        this.addDrawableChild(ButtonWidget.builder(Text.translatable("gui.cancel"), button -> this.close())
+                .dimensions(x + 91, y + 60, 75, 20).build());
     }
 
+    /**
+     * Confirms the rename and sends the packet.
+     */
     private void confirm() {
         NametagRenameClient.sendRenamePacket(this.nameField.getText());
         this.close();
     }
 
-    @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.renderBackground(context, mouseX, mouseY, delta);
-    }
-
+    /**
+     * Renders the screen.
+     */
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         int x = (this.width - this.backgroundWidth) / 2;
@@ -72,22 +74,30 @@ public class NametagRenameScreen extends Screen {
         this.nameField.render(context, mouseX, mouseY, delta);
     }
 
+    /**
+     * Handles key presses.
+     */
     @Override
     public boolean keyPressed(KeyInput input) {
         int keyCode = input.key();
-        if (keyCode == 257 || keyCode == 335) { // Enter
+        if (keyCode == 257 || keyCode == 335) {
             confirm();
             return true;
         }
         return super.keyPressed(input);
     }
 
+    /**
+     * Closes the screen.
+     */
     @Override
     public void close() {
         super.close();
-        NametagRenameClient.setNametagRename(false);
     }
 
+    /**
+     * Determines if the screen should pause the game.
+     */
     @Override
     public boolean shouldPause() {
         return false;
