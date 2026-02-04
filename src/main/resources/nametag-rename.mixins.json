@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minMixinVersion": "0.8",
+  "package": "rehdpanda.right_clickable_nametags.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+  ],
+  "client": [
+    "AnvilScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

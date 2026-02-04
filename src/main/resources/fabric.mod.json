@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "nametag-rename",
+  "version": "${version}",
+  "name": "Right-Clickable Nametags",
+  "description": "Allows renaming nametags by right-clicking them.",
+  "authors": [
+    "rehdpanda"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/fabricmc/fabric-example-mod"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "rehdpanda.right_clickable_nametags.NametagRename"
+    ],
+    "client": [
+      "rehdpanda.right_clickable_nametags.NametagRenameClient"
+    ]
+  },
+  "mixins": [
+    "nametag-rename.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": ">=1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

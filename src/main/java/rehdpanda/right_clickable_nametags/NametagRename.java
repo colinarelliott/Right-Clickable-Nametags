@@ -1,0 +1,75 @@
+package rehdpanda.right_clickable_nametags;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.ActionResult;
+import net.minecraft.world.World;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class NametagRename implements ModInitializer {
+    public static final Logger LOGGER = LoggerFactory.getLogger("nametag-rename");
+    public static final Identifier RENAME_PACKET_ID = Identifier.of("nametag-rename", "rename");
+
+    public record RenamePayload(String name) implements CustomPayload {
+        public static final Id<RenamePayload> ID = new Id<>(RENAME_PACKET_ID);
+        public static final PacketCodec<RegistryByteBuf, RenamePayload> CODEC = PacketCodec.tuple(PacketCodecs.STRING, RenamePayload::name, RenamePayload::new);
+
+        @Override
+        public Id<? extends CustomPayload> getId() {
+            return ID;
+        }
+    }
+
+    @Override
+    public void onInitialize() {
+        LOGGER.info("Right-Clickable Nametags initialized!");
+
+        PayloadTypeRegistry.playC2S().register(RenamePayload.ID, RenamePayload.CODEC);
+
+        ServerPlayNetworking.registerGlobalReceiver(RenamePayload.ID, (payload, context) -> {
+            context.server().execute(() -> {
+                PlayerEntity player = context.player();
+                ItemStack stack = player.getMainHandStack();
+                if (!stack.isOf(Items.NAME_TAG)) {
+                    stack = player.getOffHandStack();
+                }
+
+                if (stack.isOf(Items.NAME_TAG)) {
+                    String newName = payload.name();
+                    if (newName.isEmpty()) {
+                        stack.remove(DataComponentTypes.CUSTOM_NAME);
+                    } else {
+                        stack.set(DataComponentTypes.CUSTOM_NAME, net.minecraft.text.Text.literal(newName));
+                    }
+                }
+            });
+        });
+
+        UseItemCallback.EVENT.register((PlayerEntity player, World world, Hand hand) -> {
+            ItemStack stack = player.getStackInHand(hand);
+
+            if (stack.isOf(Items.NAME_TAG)) {
+                LOGGER.info("Nametag right-clicked! Client side: {}", world.isClient());
+                if (world.isClient()) {
+                    NametagRenameClient.openRenameScreen(stack, hand);
+                }
+                return ActionResult.SUCCESS;
+            }
+
+            return ActionResult.PASS;
+        });
+    }
+}
