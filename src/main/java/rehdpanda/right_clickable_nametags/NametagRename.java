@@ -55,8 +55,10 @@ public class NametagRename implements ModInitializer {
                     String newName = payload.name();
                     if (newName.isEmpty()) {
                         stack.remove(DataComponentTypes.CUSTOM_NAME);
+                        stack.remove(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE);
                     } else {
                         stack.set(DataComponentTypes.CUSTOM_NAME, net.minecraft.text.Text.literal(newName));
+                        stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
                     }
                 }
             });
